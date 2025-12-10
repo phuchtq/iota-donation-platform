@@ -145,7 +145,7 @@ Contributions are welcome! Please follow these steps:
 ## Contract address
 https://explorer.iota.org/object/0x5766fdcf2ce2163c2ea0850cdd5b5f7199a5f3afdc850d5ec7c9305ef7ebf5d1?network=testnet
 
-<img width="2054" height="1244" alt="image" src="" />
+<img width="2054" height="1244" alt="image" src="https://github.com/phuchtq/iota-donation-platform/blob/main/iota-scan-screenshot/iota-pkg-scan-screenshot.png" />
 
 
 ## License
