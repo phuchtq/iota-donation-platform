@@ -1,10 +1,10 @@
-# Micro Bounty Board
+# IOTA Donation Platform
 
 A decentralized donation platform built on the **IOTA Tangle**, enabling users to post, close, and donate campaign with trustless payment settlement. This project demonstrates a full-stack integration of a **Move** smart contract with a modern **React** frontend.
 
 ## Table of Contents
 
-- [Micro Bounty Board](#micro-bounty-board)
+- [IOTA Donation Platform](#IOTA Donation Platform)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Key Features](#key-features)
