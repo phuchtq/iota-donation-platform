@@ -86,7 +86,7 @@ This project employs several advanced patterns suitable for scalable dApp develo
 ### Clone Project
 Prepare an empty folder to clone the project by execute this command:
 ```bash
-git clone 
+git clone https://github.com/phuchtq/iota-donation-platform.git
 ```
 
 ### 1. Smart Contract Deployment
