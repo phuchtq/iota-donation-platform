@@ -55,8 +55,7 @@ interface Donation {
 
 function DonationApp() {
   const currentAccount = useCurrentAccount();
-  const [zkAccount, setZkAccount] = useState<WalletAccount | null>(null);
-  const account = zkAccount || currentAccount || null;
+  const account = currentAccount || null;
   const { mutateAsync: executeTransaction } = useSignAndExecuteTransaction();
   const iotaClient = new IotaClient({ url: getFullnodeUrl("testnet") })
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -74,9 +73,6 @@ function DonationApp() {
   const gqlClient = new IotaGraphQLClient({
     url: 'https://graphql.testnet.iota.cafe/',
   });
-
-
-  const [address, setAddress] = useState<string | null>(null);
 
   const toDateTime = (number: number): String => {
     return new Date(number).toLocaleDateString();
@@ -121,12 +117,10 @@ function DonationApp() {
         query: query,
         variables: { donationType },
       });
-      //console.log('Data fetched by GraphQL:', data);
+
       const donations: Donation[] = await Promise.all(
         data.data?.objects.nodes.map(async (node: any) => {
-          //console.log('Transaction Detal:', node);
           const json = node.asMoveObject.contents.json;
-          console.log('Json donation:', json)
           let obj: any
           await iotaClient.getObject({
             id: json.id,
@@ -137,7 +131,6 @@ function DonationApp() {
             obj = result.data?.content.fields;
           })
 
-          console.log('Data donation after call getObject():', obj)
           return {
             id: obj.id.id,
             donor: obj.donor,
@@ -152,15 +145,10 @@ function DonationApp() {
         return donation.donor === account.address;
       });
 
-      console.log('Wallet donnation: ', walletDonations)
-
       // Calculate total from walletDonations directly (not from state)
       const total = walletDonations.reduce((sum, donation: any) => {
-        console.log('Donation in calc total amount:', donation)
         return sum + donation.amount;
       }, 0);
-
-      console.log('Total contribute: ', total);
 
       setUserDonations(walletDonations);
       setwalletTotalContributed(total);
@@ -192,10 +180,9 @@ function DonationApp() {
         query: query,
         variables: { campaignType },
       });
-      console.log('Data fetched by GraphQL:', data);
+
       const campaigns: Campaign[] = await Promise.all(
         data.data?.objects.nodes.map(async (node: any) => {
-          console.log('Transaction Detal:', node);
           const json = node.asMoveObject.contents.json;
           const res = {
             id: json.id,
@@ -205,8 +192,7 @@ function DonationApp() {
             totalDonated: Number(json.total_donated) / 1_000_000_000,
             isActive: json.active,
           };
-          console.log('Campaign data:', res);
-          console.log('Start fetch campaign data by method getObject()')
+
           let obj: any
           await iotaClient.getObject({
             id: json.id,
@@ -253,7 +239,6 @@ function DonationApp() {
     if (!account || !newCampaign.name || !newCampaign.description) return;
 
     setLoading(true);
-    console.log('Wallet Address:', address);
     try {
       const tx = new Transaction();
       tx.moveCall({
@@ -287,7 +272,6 @@ function DonationApp() {
   };
 
   const handleDonate = async (campaignId: string) => {
-    console.log("campaignId:", campaignId, "donationAmount:", donationAmount);
     if (!account || !donationAmount) return;
 
     setLoading(true);
@@ -306,7 +290,6 @@ function DonationApp() {
 
       await executeTransaction({
         transaction: tx as any,
-        chain: 'sui:testnet',
       });
 
       await fetchCampaignsByGraphQL();
@@ -359,17 +342,16 @@ function DonationApp() {
       {account ? (
         // Connected State
         <div className="space-y-4">
-          {zkAccount === null &&
-            (<div
-              className="pt-4 border-t border-blue-200 relative z-[9999]"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              <ConnectButton className="w-full py-3 px-4 rounded-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-md hover:shadow-lg transition-all duration-300" />
-            </div>)}
+          <div
+            className="pt-4 border-t border-blue-200 relative z-[9999]"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <ConnectButton className="w-full py-3 px-4 rounded-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-md hover:shadow-lg transition-all duration-300" />
+          </div>
         </div>
       ) : (
         // Disconnected State
